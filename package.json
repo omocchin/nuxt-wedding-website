@@ -10,7 +10,9 @@
     "postinstall": "nuxt prepare"
   },
   "dependencies": {
+    "@mdi/font": "^7.4.47",
     "nuxt": "^3.12.4",
-    "vue": "latest"
+    "vue": "latest",
+    "vuetify-nuxt-module": "^0.17.0"
   }
 }
