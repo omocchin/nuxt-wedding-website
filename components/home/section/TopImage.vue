@@ -16,6 +16,7 @@
         <div class="d-flex justify-center align-center" style="height: calc(100%/3);">
           <base-button
             color="accent"
+            to="/rsvp"
           >
             {{ topImage.button }}
           </base-button>

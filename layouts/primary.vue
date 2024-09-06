@@ -11,7 +11,6 @@ const { mobile } = useDisplay()
 const deviceId = ref<string>('mobile')
 
 onMounted(() => {
-  console.log(mobile.value)
   if (!mobile.value) {
     deviceId.value = 'non-mobile'
   }

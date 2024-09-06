@@ -7,6 +7,7 @@
     :color="color"
     :to="link"
     :href="hrefLink"
+    :type="type"
   >
     <slot></slot>
   </v-btn>
@@ -20,6 +21,7 @@ interface Props {
   color?: string
   link?: string
   hrefLink?: string
+  type?: string
 }
 
 const props = withDefaults(defineProps<Props>(), {
@@ -28,6 +30,7 @@ const props = withDefaults(defineProps<Props>(), {
   height: '',
   color: undefined,
   link: undefined,
-  hrefLink: ''
+  hrefLink: '',
+  type: undefined
 })
 </script>

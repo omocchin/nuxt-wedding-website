@@ -18,6 +18,7 @@
         class="my-4"
         color="accent"
         size="large"
+        to="/rsvp"
       >
         {{ rsvps.button }}
       </base-button>

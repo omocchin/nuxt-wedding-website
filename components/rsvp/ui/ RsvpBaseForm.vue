@@ -62,8 +62,6 @@ props.formComponents.forEach((field) => {
 // Get the error value for the guest form component
 const fieldErrorMessages = (fieldName: string) => errors.value[fieldName] || [];
 
-const isFormValid = computed(() => Object.keys(errors.value).length === 0);
-
 // Get the depending value of another form which is a value to wether show the other form or not
 const dependantValue = computed(() => {
   return props.dependant ? props.formComponents.find(component => component.label === props.dependant)?.value : false
@@ -76,5 +74,4 @@ defineExpose({
 watch((dependantValue), () => {
   emits('dependantValue', dependantValue.value)
 })
-
 </script>

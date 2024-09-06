@@ -13,12 +13,16 @@ export default defineNuxtConfig({
         config.plugins.push(vuetify({ autoImport: true }))
       })
     },
-    //...
+    '@vee-validate/nuxt',
   ],
   vite: {
     vue: {
       template: {
         transformAssetUrls,
+      },
+      script: {
+        defineModel: true,
+        propsDestructure: true
       },
     },
   },

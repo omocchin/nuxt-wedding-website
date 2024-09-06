@@ -15,7 +15,13 @@ export interface RsvpFormComponent {
   options?: Array<Options>;
   value?: any;
   errorMessage?: any;
+}
 
+export interface RsvpFormComponents {
+  name: string;
+  dependantForm?: string
+  dependantValue?: string;
+  components: Array<RsvpFormComponent>
 }
 
 export const topImage = {
@@ -25,73 +31,111 @@ export const topImage = {
 
 export const rsvpForm = {
   title: 'ADD YOUR DETAILS',
+  backButton: 'BACK',
+  submitButton: 'SUBMIT',
   formComponents: [
     {
-      title: 'First Name',
-      label: 'firstName',
-      type: 'text-field',
-      required: true,
-      validationType: 'text'
-    },
-    {
-      title: 'Last Name',
-      label: 'lastName',
-      type: 'text-field',
-      required: true,
-      validationType: 'text'
-    },
-    {
-      title: 'Email Address',
-      label: 'email',
-      type: 'text-field',
-      required: true,
-      validationType: 'email'
-    },
-    {
-      title: 'Will you be able to attend?',
-      label: 'attendance',
-      type: 'radio',
-      required: true,
-      validationType: 'boolean',
-      options: [
+      name: 'GuestForm',
+      components: [
         {
-          label: 'YES',
-          value: true
+          title: 'First Name',
+          label: 'firstName',
+          type: 'text-field',
+          required: true,
+          validationType: 'text'
         },
         {
-          label: 'NO',
-          value: false
+          title: 'Last Name',
+          label: 'lastName',
+          type: 'text-field',
+          required: true,
+          validationType: 'text'
+        },
+        {
+          title: 'Email Address',
+          label: 'email',
+          type: 'text-field',
+          required: true,
+          validationType: 'email'
+        },
+        {
+          title: 'Will you be able to attend?',
+          label: 'attendance',
+          type: 'radio',
+          required: true,
+          validationType: 'boolean',
+          options: [
+            {
+              label: 'YES',
+              value: true
+            },
+            {
+              label: 'NO',
+              value: false
+            }
+          ]
+        },
+        {
+          title: 'Food Allergies / Preferences',
+          label: 'food',
+          type: 'text-area',
+          required: false,
+          validationType: 'text'
+        },
+        {
+          title: 'Song Suggestions',
+          label: 'song',
+          type: 'text-area',
+          required: false,
+          validationType: 'text'
+        },
+        {
+          title: 'Are you bringing a plus one?',
+          label: 'plusOne',
+          type: 'radio',
+          required: true,
+          validationType: 'boolean',
+          options: [
+            {
+              label: 'YES',
+              value: true
+            },
+            {
+              label: 'NO',
+              value: false
+            }
+          ]
         }
       ]
     },
     {
-      title: 'Food Allergies / Preferences',
-      label: 'food',
-      type: 'text-area',
-      required: false,
-      validationType: 'text'
-    },
-    {
-      title: 'Song Suggestions',
-      label: 'song',
-      type: 'text-area',
-      required: false,
-      validationType: 'text'
-    },
-    {
-      title: 'Are you bringing a plus one?',
-      label: 'plusOne',
-      type: 'radio',
-      required: true,
-      validationType: 'boolean',
-      options: [
+      name: 'PlusOneForm',
+      dependantForm: 'GuestForm',
+      dependantValue: 'plusOne',
+      components: [
         {
-          label: 'YES',
-          value: true
+          title: 'First Name',
+          label: 'plusOneFirstName',
+          type: 'text-field',
+          dependant: 'plusOne',
+          required: true,
+          validationType: 'text'
         },
         {
-          label: 'NO',
-          value: false
+          title: 'Last Name',
+          label: 'plusOneLastName',
+          type: 'text-field',
+          dependant: 'plusOne',
+          required: true,
+          validationType: 'text'
+        },
+        {
+          title: 'Food Allergies / Preferences',
+          label: 'plusOneFood',
+          type: 'text-field',
+          dependant: 'plusOne',
+          required: false,
+          validationType: 'text'
         }
       ]
     }

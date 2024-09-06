@@ -8,7 +8,8 @@ const primaryTheme: ThemeDefinition = {
     background: 'D8D9CF',
     primary: 'EDEDED',
     secondary: 'FF8787',
-    accent: 'E26868'
+    accent: 'E26868',
+    accent2: '102C57'
   },
 }
 
