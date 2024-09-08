@@ -1,5 +1,3 @@
-import * as yup from 'yup';
-
 interface Options {
   label: string;
   value: boolean | string;
@@ -9,7 +7,7 @@ export interface RsvpFormComponent {
   title: string;
   label: string;
   type?: string;
-  dependant?: string;
+  dependent?: string;
   required?: boolean;
   validationType?: string;
   options?: Array<Options>;
@@ -19,8 +17,8 @@ export interface RsvpFormComponent {
 
 export interface RsvpFormComponents {
   name: string;
-  dependantForm?: string
-  dependantValue?: string;
+  dependentForm?: string
+  dependentValue?: string;
   components: Array<RsvpFormComponent>
 }
 
@@ -33,9 +31,12 @@ export const rsvpForm = {
   title: 'ADD YOUR DETAILS',
   backButton: 'BACK',
   submitButton: 'SUBMIT',
+  submitValidationError: 'Please input all required fields to submit.',
+  submitDatabaseFailureError: 'Sorry something went wrong please try again.',
+  errorColor: 'error',
   formComponents: [
     {
-      name: 'GuestForm',
+      name: 'guests',
       components: [
         {
           title: 'First Name',
@@ -109,61 +110,35 @@ export const rsvpForm = {
       ]
     },
     {
-      name: 'PlusOneForm',
-      dependantForm: 'GuestForm',
-      dependantValue: 'plusOne',
+      name: 'plusOnes',
+      dependentForm: 'guests',
+      dependentValue: 'plusOne',
       components: [
         {
           title: 'First Name',
-          label: 'plusOneFirstName',
+          label: 'firstName',
           type: 'text-field',
-          dependant: 'plusOne',
+          dependent: 'plusOne',
           required: true,
           validationType: 'text'
         },
         {
           title: 'Last Name',
-          label: 'plusOneLastName',
+          label: 'lastName',
           type: 'text-field',
-          dependant: 'plusOne',
+          dependent: 'plusOne',
           required: true,
           validationType: 'text'
         },
         {
           title: 'Food Allergies / Preferences',
-          label: 'plusOneFood',
+          label: 'food',
           type: 'text-field',
-          dependant: 'plusOne',
+          dependent: 'plusOne',
           required: false,
           validationType: 'text'
         }
       ]
-    }
-  ],
-  plusOneFormComponents: [
-    {
-      title: 'First Name',
-      label: 'plusOneFirstName',
-      type: 'text-field',
-      dependant: 'plusOne',
-      required: true,
-      validationType: 'text'
-    },
-    {
-      title: 'Last Name',
-      label: 'plusOneLastName',
-      type: 'text-field',
-      dependant: 'plusOne',
-      required: true,
-      validationType: 'text'
-    },
-    {
-      title: 'Food Allergies / Preferences',
-      label: 'plusOneFood',
-      type: 'text-field',
-      dependant: 'plusOne',
-      required: false,
-      validationType: 'text'
     }
   ]
 }
