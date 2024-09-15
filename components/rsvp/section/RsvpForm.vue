@@ -10,6 +10,8 @@
           v-if="dependentValues[value.dependentValue]"
           :form-components="value.components"
           :name="value.name"
+          :email-title="value.emailTitle"
+          :component-order="value.componentOrder"
           :dependent-form="value.dependentForm || undefined"
           :dependent="hasDependentForm(key) ? getDependentValue(key) : undefined"
           @dependent-value="(dependent) => dependentValues[getDependentValue(key)]= dependent"
@@ -20,6 +22,8 @@
         <rsvp-base-form
           :form-components="value.components"
           :name="value.name"
+          :email-title="value.emailTitle"
+          :component-order="value.componentOrder"
           :dependent-form="value.dependentForm || undefined"
           :dependent="hasDependentForm(key) ? getDependentValue(key) : undefined"
           @dependent-value="(dependent) => dependentValues[getDependentValue(key)]= dependent"
@@ -62,8 +66,10 @@ import BaseSnackBar from '~/components/ui/BaseSnackBar.vue';
 
 import { rsvpForm, type RsvpFormComponents } from '~/utils/pages/rsvp'
 import { type SnackBar } from '~/utils/variables/interfaces'
-import { barControl } from '~/utils/variables/functions'
+import { barControl, reorderObject } from '~/utils/variables/functions'
 import { useFirebaseActions } from '~/composables/useDatabase'
+import { confirmEmail } from '~/utils/email/info'
+import { confirmationTemplate } from '~/utils/email/templates'
 
 const { addItemWithUniqueId, deleteDataFromFirebase } = useFirebaseActions();
 const formComponents = ref<any>({})
@@ -90,6 +96,23 @@ const replaceUndefinedWithNull = (obj: Record<string, any>): Record<string, any>
   }, {} as Record<string, any>);
 }
 
+const sendEmail = async (recipientName: string | null, recipientEmail: string, emailValues: any) => {
+  try {
+    const response = await $fetch('/api/send-email', {
+      method: 'POST',
+      body: {name: recipientName, email: recipientEmail, info: confirmEmail, template: confirmationTemplate(recipientName, emailValues)},
+    });
+
+    if (response.success) {
+      console.log('seccessful email')
+    } else {
+      console.log('failed to send')
+    }
+  } catch (error) {
+    console.log('error sending email')
+  }
+};
+
 // Validate each base form and submit if all validations are successful
 const onSubmit = async() => {
   let allValid = true;
@@ -109,10 +132,17 @@ const onSubmit = async() => {
       }
     }
   }
+  let recipientName = null
+  let recipientEmail = null
+  let emailValues = []
   // write data into database
   if (allValid) {
     for (const form of forms.value) {
-      const formValues = replaceUndefinedWithNull(form.values)
+      const formValues = reorderObject(replaceUndefinedWithNull(form.values), form.props.componentOrder)
+      emailValues.push({
+        title: form.props.emailTitle,
+        values: formValues
+      })
       if (form.props.dependentForm) {
         try {
           let values = {...formValues}
@@ -126,6 +156,8 @@ const onSubmit = async() => {
       } else {
         try {
           const id = await addItemWithUniqueId(form.props.name, formValues);
+          recipientName = formValues?.firstName && formValues?.lastName ? `${formValues.firstName} ${formValues.lastName}` : null
+          recipientEmail = formValues?.email || null
           if (dependentForms.includes(form.props.name)) {
             dependentValues[form.props.name] = id.key
           }
@@ -133,7 +165,8 @@ const onSubmit = async() => {
           snackBar.value = barControl(snackBar.value, rsvpForm.submitDatabaseFailureError, rsvpForm.errorColor)
         }
       }
-    } 
+    }
+    if (recipientEmail) await sendEmail(recipientName, recipientEmail, emailValues)
   } else {
     snackBar.value = barControl(snackBar.value, rsvpForm.submitValidationError, rsvpForm.errorColor)
   }

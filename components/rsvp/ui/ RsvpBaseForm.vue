@@ -37,6 +37,8 @@ const emits = defineEmits(['dependentValue'])
 interface Props {
   formComponents: Array<RsvpFormComponent>
   name: string
+  emailTitle: string
+  componentOrder: Array<string>
   dependentForm?: string
   dependent?: string
 }
@@ -44,6 +46,8 @@ interface Props {
 const props = withDefaults(defineProps<Props>(), {
   formComponents: undefined,
   name: undefined,
+  emailTitle: undefined,
+  componentOrder: undefined,
   dependentForm: undefined,
   dependent: undefined
 })

@@ -16,6 +16,8 @@ export default defineNuxtConfig({
     '@vee-validate/nuxt',
   ],
   runtimeConfig: {
+    sendGridApiKey: process.env.SENDGRID_API_KEY,
+    sendGridEmail: process.env.SENDGRID_EMAIL,
     public: {
       apiKey: process.env.FIREBASE_API_KEY,
       authDomain: process.env.FIREBASE_AUTH_DOMAIN,

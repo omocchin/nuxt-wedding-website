@@ -17,7 +17,9 @@ export interface RsvpFormComponent {
 
 export interface RsvpFormComponents {
   name: string;
-  dependentForm?: string
+  emailTitle: string;
+  componentOrder: string[]
+  dependentForm?: string;
   dependentValue?: string;
   components: Array<RsvpFormComponent>
 }
@@ -37,6 +39,10 @@ export const rsvpForm = {
   formComponents: [
     {
       name: 'guests',
+      emailTitle: 'Guest Info',
+      // The data in the db and email will appear in this order.
+      // If any components are added make sure to add the label here.
+      componentOrder: ['firstName', 'lastName', 'email', 'attendance', 'food', 'plusOne'],
       components: [
         {
           title: 'First Name',
@@ -111,6 +117,10 @@ export const rsvpForm = {
     },
     {
       name: 'plusOnes',
+      emailTitle: 'Plus One Info',
+      // The data in the db and email will appear in this order.
+      // If any components are added make sure to add the label here.
+      componentOrder:['firstName', 'lastName', 'food'],
       dependentForm: 'guests',
       dependentValue: 'plusOne',
       components: [
