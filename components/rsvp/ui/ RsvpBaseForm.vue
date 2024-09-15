@@ -32,23 +32,31 @@ import BaseRadioButton from '~/components/ui/BaseRadioButton.vue'
 
 import { rsvpForm, type RsvpFormComponent } from '~/utils/pages/rsvp'
 
-const emits = defineEmits(['dependantValue'])
+const emits = defineEmits(['dependentValue'])
 
 interface Props {
   formComponents: Array<RsvpFormComponent>
-  dependant?: string
+  name: string
+  emailTitle: string
+  componentOrder: Array<string>
+  dependentForm?: string
+  dependent?: string
 }
 
 const props = withDefaults(defineProps<Props>(), {
   formComponents: undefined,
-  dependant: undefined
+  name: undefined,
+  emailTitle: undefined,
+  componentOrder: undefined,
+  dependentForm: undefined,
+  dependent: undefined
 })
 
 // Create validation schema
 const validationSchema = createTypedSchema(props.formComponents)
 
 // Define form and validation schema
-const { validate, errors } = useForm({
+const { validate, values, errors } = useForm({
   validationSchema: computed(() => validationSchema),
 });
 
@@ -63,15 +71,17 @@ props.formComponents.forEach((field) => {
 const fieldErrorMessages = (fieldName: string) => errors.value[fieldName] || [];
 
 // Get the depending value of another form which is a value to wether show the other form or not
-const dependantValue = computed(() => {
-  return props.dependant ? props.formComponents.find(component => component.label === props.dependant)?.value : false
+const dependentValue = computed(() => {
+  return props.dependent ? props.formComponents.find(component => component.label === props.dependent)?.value : false
 })
 
 defineExpose({
-  validate
+  validate,
+  values,
+  props
 });
 
-watch((dependantValue), () => {
-  emits('dependantValue', dependantValue.value)
+watch((dependentValue), () => {
+  emits('dependentValue', dependentValue.value)
 })
 </script>
