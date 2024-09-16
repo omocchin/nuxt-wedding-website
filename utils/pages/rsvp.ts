@@ -152,3 +152,9 @@ export const rsvpForm = {
     }
   ]
 }
+
+export const confirmation = {
+  title: 'RSVP RECEIVED',
+  dialog: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.',
+  buttonText: 'Back to home'
+}

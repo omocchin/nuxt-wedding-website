@@ -71,6 +71,8 @@ import { useFirebaseActions } from '~/composables/useDatabase'
 import { confirmEmail } from '~/utils/email/info'
 import { confirmationTemplate } from '~/utils/email/templates'
 
+const emits = defineEmits(['rsvpConfirmed'])
+
 const { addItemWithUniqueId, deleteDataFromFirebase } = useFirebaseActions();
 const formComponents = ref<any>({})
 const dependentValues = ref<any>({})
@@ -97,20 +99,11 @@ const replaceUndefinedWithNull = (obj: Record<string, any>): Record<string, any>
 }
 
 const sendEmail = async (recipientName: string | null, recipientEmail: string, emailValues: any) => {
-  try {
-    const response = await $fetch('/api/send-email', {
-      method: 'POST',
-      body: {name: recipientName, email: recipientEmail, info: confirmEmail, template: confirmationTemplate(recipientName, emailValues)},
-    });
-
-    if (response.success) {
-      console.log('seccessful email')
-    } else {
-      console.log('failed to send')
-    }
-  } catch (error) {
-    console.log('error sending email')
-  }
+  const response = await $fetch('/api/send-email', {
+    method: 'POST',
+    body: {name: recipientName, email: recipientEmail, info: confirmEmail, template: confirmationTemplate(recipientName, emailValues)},
+  });
+  return response
 };
 
 // Validate each base form and submit if all validations are successful
@@ -166,7 +159,14 @@ const onSubmit = async() => {
         }
       }
     }
-    if (recipientEmail) await sendEmail(recipientName, recipientEmail, emailValues)
+    if (recipientEmail) {
+      const response: any = await sendEmail(recipientName, recipientEmail, emailValues)
+      if (response.success) {
+        emits('rsvpConfirmed')
+      } else {
+        snackBar.value = barControl(snackBar.value, response.message, rsvpForm.errorColor)
+      }
+    }
   } else {
     snackBar.value = barControl(snackBar.value, rsvpForm.submitValidationError, rsvpForm.errorColor)
   }
