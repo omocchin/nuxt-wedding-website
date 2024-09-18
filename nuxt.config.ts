@@ -18,6 +18,10 @@ export default defineNuxtConfig({
   runtimeConfig: {
     sendGridApiKey: process.env.SENDGRID_API_KEY,
     sendGridEmail: process.env.SENDGRID_EMAIL,
+    firebaseAdminProjectId: process.env.FIREBASE_ADMIN_PROJECT_ID,
+    firebaseAdminPrivateKey: process.env.FIREBASE_ADMIN_PRIVATE_KEY,
+    firebaseAdminClientEmail: process.env.FIREBASE_ADMIN_CLIENT_EMAIL,
+    firebaseAdminDatabaseUrl: process.env.FIREBASE_ADMIN_DATABASE_URL,
     public: {
       apiKey: process.env.FIREBASE_API_KEY,
       authDomain: process.env.FIREBASE_AUTH_DOMAIN,

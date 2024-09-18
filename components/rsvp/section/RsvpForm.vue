@@ -106,6 +106,23 @@ const sendEmail = async (recipientName: string | null, recipientEmail: string, e
   return response
 };
 
+const addToDatabase = async (path: string, data: any) => {
+  const response  = await $fetch('/api/database',{
+    method: 'POST',
+    body: {path: path, data: data}
+  });
+  return response
+}
+
+const deleteFromDatabase = async (path: string) => {
+  const response  = await $fetch('/api/database',{
+    method: 'DELETE',
+    body: {path: path}
+  });
+  return response
+}
+
+
 // Validate each base form and submit if all validations are successful
 const onSubmit = async() => {
   let allValid = true;
@@ -127,6 +144,7 @@ const onSubmit = async() => {
   }
   let recipientName = null
   let recipientEmail = null
+  let dataSuccess = true
   let emailValues = []
   // write data into database
   if (allValid) {
@@ -140,26 +158,28 @@ const onSubmit = async() => {
         try {
           let values = {...formValues}
           values[form.props.dependentForm + '_id'] = dependentValues[form.props.dependentForm]
-          await addItemWithUniqueId(form.props.name, values);
+          await addToDatabase(form.props.name, values);
         } catch (error) {
           // delete the depending value
-          await deleteDataFromFirebase(`${form.props.dependentForm}/${dependentValues[form.props.dependentForm]}`)
+          await deleteFromDatabase(`${form.props.dependentForm}/${dependentValues[form.props.dependentForm]}`)
           snackBar.value = barControl(snackBar.value, rsvpForm.submitDatabaseFailureError, rsvpForm.errorColor)
+          dataSuccess = false
         }
       } else {
         try {
-          const id = await addItemWithUniqueId(form.props.name, formValues);
+          const response = await addToDatabase(form.props.name, formValues);
           recipientName = formValues?.firstName && formValues?.lastName ? `${formValues.firstName} ${formValues.lastName}` : null
           recipientEmail = formValues?.email || null
           if (dependentForms.includes(form.props.name)) {
-            dependentValues[form.props.name] = id.key
+            dependentValues[form.props.name] = response.key
           }
         } catch (error) {
           snackBar.value = barControl(snackBar.value, rsvpForm.submitDatabaseFailureError, rsvpForm.errorColor)
+          dataSuccess = false
         }
       }
     }
-    if (recipientEmail) {
+    if (recipientEmail && dataSuccess) {
       const response: any = await sendEmail(recipientName, recipientEmail, emailValues)
       if (response.success) {
         emits('rsvpConfirmed')
