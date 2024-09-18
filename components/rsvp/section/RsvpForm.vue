@@ -64,16 +64,14 @@ import RsvpBaseForm from '~/components/rsvp/ui/ RsvpBaseForm.vue'
 import BaseButton from '~/components/ui/BaseButton.vue'
 import BaseSnackBar from '~/components/ui/BaseSnackBar.vue';
 
-import { rsvpForm, type RsvpFormComponents } from '~/utils/pages/rsvp'
+import { rsvpForm } from '~/utils/pages/rsvp'
 import { type SnackBar } from '~/utils/variables/interfaces'
 import { barControl, reorderObject } from '~/utils/variables/functions'
-import { useFirebaseActions } from '~/composables/useDatabase'
 import { confirmEmail } from '~/utils/email/info'
 import { confirmationTemplate } from '~/utils/email/templates'
 
 const emits = defineEmits(['rsvpConfirmed'])
 
-const { addItemWithUniqueId, deleteDataFromFirebase } = useFirebaseActions();
 const formComponents = ref<any>({})
 const dependentValues = ref<any>({})
 const forms = ref<any>([])
