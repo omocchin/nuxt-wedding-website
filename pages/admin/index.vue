@@ -36,7 +36,7 @@ const login = async () => {
   const result = await loginWithGoogle();
 
   if (result.success) {
-    router.push({ path: "/admin/data"})
+    router.push({ path: "/admin/database"})
   } else {
     snackBar.value = barControl(snackBar.value, result.message, admin.errorColor)
   }

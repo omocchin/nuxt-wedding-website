@@ -39,7 +39,6 @@
           class="w-100"
           color="accent2"
           size="large"
-          type="submit"
           to="/"
         >
           {{ rsvpForm.backButton }}
@@ -155,7 +154,7 @@ const onSubmit = async() => {
       if (form.props.dependentForm) {
         try {
           let values = {...formValues}
-          values[form.props.dependentForm + '_id'] = dependentValues[form.props.dependentForm]
+          values[form.props.dependentForm + 'Id'] = dependentValues[form.props.dependentForm]
           await addToDatabase(form.props.name, values);
         } catch (error) {
           // delete the depending value
