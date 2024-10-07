@@ -42,7 +42,7 @@ export const rsvpForm = {
       emailTitle: 'Guest Info',
       // The data in the db and email will appear in this order.
       // If any components are added make sure to add the label here.
-      componentOrder: ['firstName', 'lastName', 'email', 'attendance', 'food', 'plusOne'],
+      componentOrder: ['firstName', 'lastName', 'email', 'attendance', 'food', 'song', 'plusOne'],
       components: [
         {
           title: 'First Name',
@@ -151,4 +151,10 @@ export const rsvpForm = {
       ]
     }
   ]
+}
+
+export const confirmation = {
+  title: 'RSVP RECEIVED',
+  dialog: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.',
+  buttonText: 'Back to home'
 }

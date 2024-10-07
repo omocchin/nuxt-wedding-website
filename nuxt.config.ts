@@ -18,14 +18,18 @@ export default defineNuxtConfig({
   runtimeConfig: {
     sendGridApiKey: process.env.SENDGRID_API_KEY,
     sendGridEmail: process.env.SENDGRID_EMAIL,
+    firebaseAdminProjectId: process.env.FIREBASE_ADMIN_PROJECT_ID,
+    firebaseAdminPrivateKey: process.env.FIREBASE_ADMIN_PRIVATE_KEY,
+    firebaseAdminClientEmail: process.env.FIREBASE_ADMIN_CLIENT_EMAIL,
+    firebaseAdminDatabaseUrl: process.env.FIREBASE_ADMIN_DATABASE_URL,
+    firebaseAuthAllowedEmails: process.env.FIREBASE_AUTH_ALLOWED_EMAILS,
     public: {
-      apiKey: process.env.FIREBASE_API_KEY,
-      authDomain: process.env.FIREBASE_AUTH_DOMAIN,
-      databaseURL: process.env.FIREBASE_DATABASE_URL,
-      projectId: process.env.FIREBASE_PROJECT_ID,
-      storageBucket: process.env.FIREBASE_STORAGE_BUCKET,
-      messagingSenderId: process.env.FIREBASE_MESSAGING_SENDER_ID,
-      appId: process.env.FIREBASE_APP_ID
+      firebaseApiKey: process.env.FIREBASE_API_KEY,
+      firebaseAuthDomain: process.env.FIREBASE_AUTH_DOMAIN,
+      firebaseProjectId: process.env.FIREBASE_PROJECT_ID,
+      firebaseStorageBucket: process.env.FIREBASE_STORAGE_BUCKET,
+      firebaseMessagingSenderId: process.env.FIREBASE_MESSAGING_SENDER_ID,
+      firebaseAppId: process.env.FIREBASE_APP_ID,
     }
   },
   vite: {

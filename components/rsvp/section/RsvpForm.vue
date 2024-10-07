@@ -39,7 +39,6 @@
           class="w-100"
           color="accent2"
           size="large"
-          type="submit"
           to="/"
         >
           {{ rsvpForm.backButton }}
@@ -64,14 +63,14 @@ import RsvpBaseForm from '~/components/rsvp/ui/ RsvpBaseForm.vue'
 import BaseButton from '~/components/ui/BaseButton.vue'
 import BaseSnackBar from '~/components/ui/BaseSnackBar.vue';
 
-import { rsvpForm, type RsvpFormComponents } from '~/utils/pages/rsvp'
+import { rsvpForm } from '~/utils/pages/rsvp'
 import { type SnackBar } from '~/utils/variables/interfaces'
 import { barControl, reorderObject } from '~/utils/variables/functions'
-import { useFirebaseActions } from '~/composables/useDatabase'
 import { confirmEmail } from '~/utils/email/info'
 import { confirmationTemplate } from '~/utils/email/templates'
 
-const { addItemWithUniqueId, deleteDataFromFirebase } = useFirebaseActions();
+const emits = defineEmits(['rsvpConfirmed'])
+
 const formComponents = ref<any>({})
 const dependentValues = ref<any>({})
 const forms = ref<any>([])
@@ -97,21 +96,29 @@ const replaceUndefinedWithNull = (obj: Record<string, any>): Record<string, any>
 }
 
 const sendEmail = async (recipientName: string | null, recipientEmail: string, emailValues: any) => {
-  try {
-    const response = await $fetch('/api/send-email', {
-      method: 'POST',
-      body: {name: recipientName, email: recipientEmail, info: confirmEmail, template: confirmationTemplate(recipientName, emailValues)},
-    });
-
-    if (response.success) {
-      console.log('seccessful email')
-    } else {
-      console.log('failed to send')
-    }
-  } catch (error) {
-    console.log('error sending email')
-  }
+  const response = await $fetch('/api/send-email', {
+    method: 'POST',
+    body: {name: recipientName, email: recipientEmail, info: confirmEmail, template: confirmationTemplate(recipientName, emailValues)},
+  });
+  return response
 };
+
+const addToDatabase = async (path: string, data: any) => {
+  const response  = await $fetch('/api/database',{
+    method: 'POST',
+    body: {path: path, data: data}
+  });
+  return response
+}
+
+const deleteFromDatabase = async (path: string) => {
+  const response  = await $fetch('/api/database',{
+    method: 'DELETE',
+    body: {path: path}
+  });
+  return response
+}
+
 
 // Validate each base form and submit if all validations are successful
 const onSubmit = async() => {
@@ -134,6 +141,7 @@ const onSubmit = async() => {
   }
   let recipientName = null
   let recipientEmail = null
+  let dataSuccess = true
   let emailValues = []
   // write data into database
   if (allValid) {
@@ -146,27 +154,36 @@ const onSubmit = async() => {
       if (form.props.dependentForm) {
         try {
           let values = {...formValues}
-          values[form.props.dependentForm + '_id'] = dependentValues[form.props.dependentForm]
-          await addItemWithUniqueId(form.props.name, values);
+          values[form.props.dependentForm + 'Id'] = dependentValues[form.props.dependentForm]
+          await addToDatabase(form.props.name, values);
         } catch (error) {
           // delete the depending value
-          await deleteDataFromFirebase(`${form.props.dependentForm}/${dependentValues[form.props.dependentForm]}`)
+          await deleteFromDatabase(`${form.props.dependentForm}/${dependentValues[form.props.dependentForm]}`)
           snackBar.value = barControl(snackBar.value, rsvpForm.submitDatabaseFailureError, rsvpForm.errorColor)
+          dataSuccess = false
         }
       } else {
         try {
-          const id = await addItemWithUniqueId(form.props.name, formValues);
+          const response = await addToDatabase(form.props.name, formValues);
           recipientName = formValues?.firstName && formValues?.lastName ? `${formValues.firstName} ${formValues.lastName}` : null
           recipientEmail = formValues?.email || null
           if (dependentForms.includes(form.props.name)) {
-            dependentValues[form.props.name] = id.key
+            dependentValues[form.props.name] = response.key
           }
         } catch (error) {
           snackBar.value = barControl(snackBar.value, rsvpForm.submitDatabaseFailureError, rsvpForm.errorColor)
+          dataSuccess = false
         }
       }
     }
-    if (recipientEmail) await sendEmail(recipientName, recipientEmail, emailValues)
+    if (recipientEmail && dataSuccess) {
+      const response: any = await sendEmail(recipientName, recipientEmail, emailValues)
+      if (response.success) {
+        emits('rsvpConfirmed')
+      } else {
+        snackBar.value = barControl(snackBar.value, response.message, rsvpForm.errorColor)
+      }
+    }
   } else {
     snackBar.value = barControl(snackBar.value, rsvpForm.submitValidationError, rsvpForm.errorColor)
   }
